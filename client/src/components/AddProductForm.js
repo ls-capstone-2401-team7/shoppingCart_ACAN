@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const AddProductForm = ({ setProducts }) => {
+const AddProductForm = ({ handleSubmit, isFormDisplayed, onIsFormDisplayed }) => {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
@@ -12,16 +12,27 @@ const AddProductForm = ({ setProducts }) => {
       price,
       quantity
     };
-;
-    setProducts((old) => old.concat(newObj))
+    handleSubmit(newObj, reset)
   }
+
+  const reset = () => {
+    setTitle("")
+    setPrice("")
+    setQuantity("")
+  }
+
+  const displayForm = () => {
+    return isFormDisplayed ? 'block' : 'none'
+  }
+
+
   return (
-    <div className="add-form visible">
-      <p>
-        <button className="add-product-button">Add A Product</button>
-      </p>
+    <div className={isFormDisplayed ? "add-form visible" : "add-form"}>
+      {!isFormDisplayed && <p>
+        <button onClick={onIsFormDisplayed} className="add-product-button">Add A Product</button>
+      </p>}
       <h3>Add Product</h3>
-      <form onSubmit={onSubmit}>
+      {isFormDisplayed && <form style={{ display: displayForm()}} onSubmit={onSubmit}>
         <div className="input-group">
           <label htmlFor="product-name">Product Name:</label>
           <input
@@ -60,9 +71,9 @@ const AddProductForm = ({ setProducts }) => {
         </div>
         <div className="actions form-actions">
           <button type="submit">Add</button>
-          <button type="button">Cancel</button>
+          <button onClick={onIsFormDisplayed} type="button">Cancel</button>
         </div>
-      </form>
+      </form>}
     </div>
   );
 };

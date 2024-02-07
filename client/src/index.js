@@ -7,18 +7,47 @@ import data from './mockData/data'
 import { useState } from 'react'
 const App = () => {
   const [products, setProducts] = useState(data);
+  const [isFormDisplayed, setIsFormDisplayed] = useState(false)
+  const [cartState, setCartState] = useState([])
   
-  // const onSubmit = (e) => {
-  //   e.preventDefault();
-  //   setProducts(data.concat(newObj));
-  // }
+  
+  const handleSubmit = (newObj, callback) => {
+    setProducts(prev => prev.concat(newObj))
+    if (callback) {
+      callback()
+    }    
+  }
+
+  const handleIsFormDisplayed = () => {
+    setIsFormDisplayed(!isFormDisplayed)
+  }
+
+  const handleAddToCart = (productId) => {
+    const newProdcuts = products.map(product => {
+      if (product.id === productId) {
+        const revisedProduct = {...product, quantity: product.quantity - 1 }
+        const itemInCart = cartState.find(product => product.id === productId)
+
+        if (itemInCart) {
+          itemInCart.quantity = itemInCart.quantity + 1
+        } else {
+          setCartState(prev => prev.concat({...product, quantity: 1}))
+        }
+    
+        return revisedProduct
+      } else {
+        return product
+      }
+    })
+    setProducts(newProdcuts)
+  }
 
   return (
     <div id="app">
-    <Header />
+    <Header cartState={cartState}/>
     <main>
-      <ProductList products={products}/>
-      <AddProductForm setProducts={setProducts}/>
+      <ProductList products={products} onHandleAddToCart={handleAddToCart}/>
+      <AddProductForm handleSubmit={handleSubmit} isFormDisplayed={isFormDisplayed} onIsFormDisplayed={handleIsFormDisplayed}/>
     </main>
     </div>
   )
