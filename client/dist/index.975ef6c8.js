@@ -2974,23 +2974,33 @@ const App = ()=>{
         setIsFormDisplayed(!isFormDisplayed);
     };
     const handleAddToCart = (productId)=>{
-        const newProdcuts = products.map((product)=>{
-            if (product.id === productId) {
-                const revisedProduct = {
-                    ...product,
-                    quantity: product.quantity - 1
-                };
-                const itemInCart = cartState.find((product)=>product.id === productId);
-                if (itemInCart) itemInCart.quantity = itemInCart.quantity + 1;
-                else setCartState((prev)=>prev.concat({
+        setProducts((oldProducts)=>{
+            return oldProducts.map((product)=>{
+                if (product.id === productId) {
+                    const revisedProduct = {
                         ...product,
-                        quantity: 1
-                    }));
-                return revisedProduct;
-            } else return product;
+                        quantity: product.quantity - 1
+                    };
+                    const itemInCart = cartState.find((product)=>product.id === productId);
+                    if (itemInCart) setCartState((prevCart)=>{
+                        return prevCart.map((product)=>{
+                            if (product.id === itemInCart.id) return {
+                                ...product,
+                                quantity: product.quantity + 1
+                            };
+                            return product;
+                        });
+                    });
+                    else setCartState((prev)=>prev.concat({
+                            ...product,
+                            quantity: 1
+                        }));
+                    return revisedProduct;
+                } else return product;
+            });
         });
-        setProducts(newProdcuts);
     };
+    const handleClickUpdate = ()=>{};
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
         id: "app",
         children: [
@@ -2998,8 +3008,8 @@ const App = ()=>{
                 cartState: cartState
             }, void 0, false, {
                 fileName: "src/index.js",
-                lineNumber: 47,
-                columnNumber: 5
+                lineNumber: 61,
+                columnNumber: 7
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("main", {
                 children: [
@@ -3008,8 +3018,8 @@ const App = ()=>{
                         onHandleAddToCart: handleAddToCart
                     }, void 0, false, {
                         fileName: "src/index.js",
-                        lineNumber: 49,
-                        columnNumber: 7
+                        lineNumber: 63,
+                        columnNumber: 9
                     }, undefined),
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _addProductFormDefault.default), {
                         handleSubmit: handleSubmit,
@@ -3017,26 +3027,31 @@ const App = ()=>{
                         onIsFormDisplayed: handleIsFormDisplayed
                     }, void 0, false, {
                         fileName: "src/index.js",
-                        lineNumber: 50,
-                        columnNumber: 7
+                        lineNumber: 64,
+                        columnNumber: 9
                     }, undefined)
                 ]
             }, void 0, true, {
                 fileName: "src/index.js",
-                lineNumber: 48,
-                columnNumber: 5
+                lineNumber: 62,
+                columnNumber: 7
             }, undefined)
         ]
     }, void 0, true, {
         fileName: "src/index.js",
-        lineNumber: 46,
+        lineNumber: 60,
         columnNumber: 5
     }, undefined);
 };
 _s(App, "nzTbEoyjLmsJQcRHUiir3q1t+AA=");
 _c = App;
 const rootElement = document.getElementById("root");
-(0, _clientDefault.default).createRoot(rootElement).render(/*#__PURE__*/ (0, _reactDefault.default).createElement(App)); // npm intellisense 
+(0, _clientDefault.default).createRoot(rootElement).render(/*#__PURE__*/ (0, _reactDefault.default).createElement(App)); // npm intellisense
+ // change just the name and price, NOT the quantity. 
+ /*
+ * make edit form 
+ * with edits, change name and price in cart (if there) 
+ */ 
 var _c;
 $RefreshReg$(_c, "App");
 
@@ -27243,14 +27258,69 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _jsxDevRuntime = require("react/jsx-dev-runtime");
 const Header = ({ cartState })=>{
-    console.log(cartState);
+    // console.log(cartState);
+    const total = cartState.reduce((result, product)=>result + product.quantity * product.price, 0).toFixed(2);
+    if (cartState.length === 0) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("header", {
+        children: [
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h1", {
+                children: "The Shop!"
+            }, void 0, false, {
+                fileName: "src/components/Header.js",
+                lineNumber: 8,
+                columnNumber: 9
+            }, undefined),
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                className: "cart",
+                children: [
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h2", {
+                        children: "Your Cart"
+                    }, void 0, false, {
+                        fileName: "src/components/Header.js",
+                        lineNumber: 10,
+                        columnNumber: 11
+                    }, undefined),
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                        children: "Your cart is empty"
+                    }, void 0, false, {
+                        fileName: "src/components/Header.js",
+                        lineNumber: 11,
+                        columnNumber: 11
+                    }, undefined),
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                        children: "Total: $0"
+                    }, void 0, false, {
+                        fileName: "src/components/Header.js",
+                        lineNumber: 12,
+                        columnNumber: 11
+                    }, undefined),
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                        className: "checkout",
+                        disabled: true,
+                        children: "Checkout"
+                    }, void 0, false, {
+                        fileName: "src/components/Header.js",
+                        lineNumber: 13,
+                        columnNumber: 11
+                    }, undefined)
+                ]
+            }, void 0, true, {
+                fileName: "src/components/Header.js",
+                lineNumber: 9,
+                columnNumber: 9
+            }, undefined)
+        ]
+    }, void 0, true, {
+        fileName: "src/components/Header.js",
+        lineNumber: 7,
+        columnNumber: 7
+    }, undefined);
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("header", {
         children: [
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h1", {
                 children: "The Shop!"
             }, void 0, false, {
                 fileName: "src/components/Header.js",
-                lineNumber: 5,
+                lineNumber: 23,
                 columnNumber: 7
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -27260,42 +27330,142 @@ const Header = ({ cartState })=>{
                         children: "Your Cart"
                     }, void 0, false, {
                         fileName: "src/components/Header.js",
-                        lineNumber: 7,
+                        lineNumber: 25,
                         columnNumber: 9
                     }, undefined),
-                    cartState.length === 0 && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
-                        children: "Your cart is empty"
-                    }, void 0, false, {
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("table", {
+                        className: "cart-items",
+                        children: [
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("thead", {
+                                children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("tr", {
+                                    children: [
+                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("th", {
+                                            scope: "col",
+                                            children: "Item"
+                                        }, void 0, false, {
+                                            fileName: "src/components/Header.js",
+                                            lineNumber: 29,
+                                            columnNumber: 15
+                                        }, undefined),
+                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("th", {
+                                            scope: "col",
+                                            children: "Quantity"
+                                        }, void 0, false, {
+                                            fileName: "src/components/Header.js",
+                                            lineNumber: 30,
+                                            columnNumber: 15
+                                        }, undefined),
+                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("th", {
+                                            scope: "col",
+                                            children: "Price"
+                                        }, void 0, false, {
+                                            fileName: "src/components/Header.js",
+                                            lineNumber: 31,
+                                            columnNumber: 15
+                                        }, undefined)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "src/components/Header.js",
+                                    lineNumber: 28,
+                                    columnNumber: 13
+                                }, undefined)
+                            }, void 0, false, {
+                                fileName: "src/components/Header.js",
+                                lineNumber: 27,
+                                columnNumber: 11
+                            }, undefined),
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("tbody", {
+                                children: cartState.map((product)=>{
+                                    return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("tr", {
+                                        children: [
+                                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("td", {
+                                                children: product.title
+                                            }, void 0, false, {
+                                                fileName: "src/components/Header.js",
+                                                lineNumber: 38,
+                                                columnNumber: 19
+                                            }, undefined),
+                                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("td", {
+                                                children: product.quantity
+                                            }, void 0, false, {
+                                                fileName: "src/components/Header.js",
+                                                lineNumber: 39,
+                                                columnNumber: 19
+                                            }, undefined),
+                                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("td", {
+                                                children: product.price
+                                            }, void 0, false, {
+                                                fileName: "src/components/Header.js",
+                                                lineNumber: 40,
+                                                columnNumber: 19
+                                            }, undefined)
+                                        ]
+                                    }, product.id, true, {
+                                        fileName: "src/components/Header.js",
+                                        lineNumber: 37,
+                                        columnNumber: 17
+                                    }, undefined);
+                                })
+                            }, void 0, false, {
+                                fileName: "src/components/Header.js",
+                                lineNumber: 34,
+                                columnNumber: 11
+                            }, undefined),
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("tfoot", {
+                                children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("tr", {
+                                    children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("td", {
+                                        colSpan: "3",
+                                        className: "total",
+                                        children: [
+                                            "Total: $",
+                                            total
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "src/components/Header.js",
+                                        lineNumber: 47,
+                                        columnNumber: 15
+                                    }, undefined)
+                                }, void 0, false, {
+                                    fileName: "src/components/Header.js",
+                                    lineNumber: 46,
+                                    columnNumber: 13
+                                }, undefined)
+                            }, void 0, false, {
+                                fileName: "src/components/Header.js",
+                                lineNumber: 45,
+                                columnNumber: 11
+                            }, undefined)
+                        ]
+                    }, void 0, true, {
                         fileName: "src/components/Header.js",
-                        lineNumber: 8,
-                        columnNumber: 36
+                        lineNumber: 26,
+                        columnNumber: 9
                     }, undefined),
-                    cartState.length === 0 && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
-                        children: "Total: $0"
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                        className: "checkout-button",
+                        children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                            className: "checkout",
+                            children: "Checkout"
+                        }, void 0, false, {
+                            fileName: "src/components/Header.js",
+                            lineNumber: 54,
+                            columnNumber: 11
+                        }, undefined)
                     }, void 0, false, {
                         fileName: "src/components/Header.js",
-                        lineNumber: 9,
-                        columnNumber: 36
-                    }, undefined),
-                    cartState.length === 0 && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
-                        className: "checkout",
-                        disabled: true,
-                        children: "Checkout"
-                    }, void 0, false, {
-                        fileName: "src/components/Header.js",
-                        lineNumber: 10,
-                        columnNumber: 36
+                        lineNumber: 53,
+                        columnNumber: 9
                     }, undefined)
                 ]
             }, void 0, true, {
                 fileName: "src/components/Header.js",
-                lineNumber: 6,
+                lineNumber: 24,
                 columnNumber: 7
             }, undefined)
         ]
     }, void 0, true, {
         fileName: "src/components/Header.js",
-        lineNumber: 4,
+        lineNumber: 22,
         columnNumber: 5
     }, undefined);
 };
@@ -27544,111 +27714,283 @@ try {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _jsxDevRuntime = require("react/jsx-dev-runtime");
+var _react = require("react");
+var _editProduct = require("./EditProduct");
+var _editProductDefault = parcelHelpers.interopDefault(_editProduct);
+var _s = $RefreshSig$();
 const Product = ({ title, quantity, price, onHandleAddToCart, id })=>{
-    console.log(onHandleAddToCart);
+    _s();
     const handleAddToCart = ()=>{
         onHandleAddToCart(id);
     };
+    const [editIsTrue, setEditTrue] = (0, _react.useState)(false);
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("li", {
         className: "product",
-        children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-            className: "product-details",
-            children: [
-                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h3", {
-                    children: title
-                }, void 0, false, {
-                    fileName: "src/components/Product.js",
-                    lineNumber: 9,
-                    columnNumber: 9
-                }, undefined),
-                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
-                    className: "price",
-                    children: [
-                        "$",
-                        price
-                    ]
-                }, void 0, true, {
-                    fileName: "src/components/Product.js",
-                    lineNumber: 10,
-                    columnNumber: 9
-                }, undefined),
-                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
-                    className: "quantity",
-                    children: [
-                        quantity,
-                        " left in stock"
-                    ]
-                }, void 0, true, {
-                    fileName: "src/components/Product.js",
-                    lineNumber: 11,
-                    columnNumber: 9
-                }, undefined),
-                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                    className: "actions product-actions",
-                    children: [
-                        quantity === 0 ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
-                            disabled: true,
-                            className: "add-to-cart",
-                            children: "Add to Cart"
-                        }, void 0, false, {
-                            fileName: "src/components/Product.js",
-                            lineNumber: 13,
-                            columnNumber: 29
-                        }, undefined) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
-                            onClick: handleAddToCart,
-                            className: "add-to-cart",
-                            children: "Add to Cart"
-                        }, void 0, false, {
-                            fileName: "src/components/Product.js",
-                            lineNumber: 13,
-                            columnNumber: 93
-                        }, undefined),
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
-                            className: "edit",
-                            children: "Edit"
-                        }, void 0, false, {
-                            fileName: "src/components/Product.js",
-                            lineNumber: 14,
-                            columnNumber: 11
-                        }, undefined)
-                    ]
-                }, void 0, true, {
-                    fileName: "src/components/Product.js",
-                    lineNumber: 12,
-                    columnNumber: 9
-                }, undefined),
-                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
-                    className: "delete-button",
-                    children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
-                        children: "X"
+        children: [
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                className: "product-details",
+                children: [
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h3", {
+                        children: title
                     }, void 0, false, {
                         fileName: "src/components/Product.js",
+                        lineNumber: 14,
+                        columnNumber: 9
+                    }, undefined),
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                        className: "price",
+                        children: [
+                            "$",
+                            price
+                        ]
+                    }, void 0, true, {
+                        fileName: "src/components/Product.js",
+                        lineNumber: 15,
+                        columnNumber: 9
+                    }, undefined),
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                        className: "quantity",
+                        children: [
+                            quantity,
+                            " left in stock"
+                        ]
+                    }, void 0, true, {
+                        fileName: "src/components/Product.js",
+                        lineNumber: 16,
+                        columnNumber: 9
+                    }, undefined),
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                        className: "actions product-actions",
+                        children: [
+                            quantity === 0 ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                                disabled: true,
+                                className: "add-to-cart",
+                                children: "Add to Cart"
+                            }, void 0, false, {
+                                fileName: "src/components/Product.js",
+                                lineNumber: 19,
+                                columnNumber: 13
+                            }, undefined) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                                onClick: handleAddToCart,
+                                className: "add-to-cart",
+                                children: "Add to Cart"
+                            }, void 0, false, {
+                                fileName: "src/components/Product.js",
+                                lineNumber: 23,
+                                columnNumber: 13
+                            }, undefined),
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                                className: "edit",
+                                onClick: ()=>setEditTrue(!editIsTrue),
+                                children: "Edit"
+                            }, void 0, false, {
+                                fileName: "src/components/Product.js",
+                                lineNumber: 27,
+                                columnNumber: 11
+                            }, undefined)
+                        ]
+                    }, void 0, true, {
+                        fileName: "src/components/Product.js",
                         lineNumber: 17,
-                        columnNumber: 11
+                        columnNumber: 9
+                    }, undefined),
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                        className: "delete-button",
+                        children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
+                            children: "X"
+                        }, void 0, false, {
+                            fileName: "src/components/Product.js",
+                            lineNumber: 32,
+                            columnNumber: 11
+                        }, undefined)
+                    }, void 0, false, {
+                        fileName: "src/components/Product.js",
+                        lineNumber: 31,
+                        columnNumber: 9
                     }, undefined)
-                }, void 0, false, {
-                    fileName: "src/components/Product.js",
-                    lineNumber: 16,
-                    columnNumber: 9
-                }, undefined)
-            ]
-        }, void 0, true, {
-            fileName: "src/components/Product.js",
-            lineNumber: 8,
-            columnNumber: 7
-        }, undefined)
-    }, void 0, false, {
+                ]
+            }, void 0, true, {
+                fileName: "src/components/Product.js",
+                lineNumber: 13,
+                columnNumber: 7
+            }, undefined),
+            editIsTrue && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _editProductDefault.default), {}, void 0, false, {
+                fileName: "src/components/Product.js",
+                lineNumber: 35,
+                columnNumber: 22
+            }, undefined)
+        ]
+    }, void 0, true, {
         fileName: "src/components/Product.js",
-        lineNumber: 7,
+        lineNumber: 12,
         columnNumber: 5
     }, undefined);
 };
+_s(Product, "+WeLfPzYjh4qO02OjsYIBc2dVZI=");
 _c = Product;
 exports.default = Product;
 var _c;
 $RefreshReg$(_c, "Product");
 
   $parcel$ReactRefreshHelpers$5065.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react/jsx-dev-runtime":"iTorj","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru","react":"21dqq","./EditProduct":"gkCc6"}],"gkCc6":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$6c2e = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+$parcel$ReactRefreshHelpers$6c2e.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _jsxDevRuntime = require("react/jsx-dev-runtime");
+var _s = $RefreshSig$();
+const EditProduct = ({ title, price, quantity })=>{
+    _s();
+    const [title, setTitle] = useState(title);
+    const [price, setPrice] = useState(price);
+    const [qty, setQty] = useState(quantity);
+    return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+        className: "edit-form",
+        children: [
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h3", {
+                children: "Edit Product"
+            }, void 0, false, {
+                fileName: "src/components/EditProduct.js",
+                lineNumber: 8,
+                columnNumber: 7
+            }, undefined),
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("form", {
+                children: [
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                        className: "input-group",
+                        children: [
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
+                                for: "product-name",
+                                children: "Product Name"
+                            }, void 0, false, {
+                                fileName: "src/components/EditProduct.js",
+                                lineNumber: 11,
+                                columnNumber: 11
+                            }, undefined),
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
+                                type: "text",
+                                id: "product-name",
+                                value: title,
+                                "aria-label": "Product Name"
+                            }, void 0, false, {
+                                fileName: "src/components/EditProduct.js",
+                                lineNumber: 12,
+                                columnNumber: 11
+                            }, undefined)
+                        ]
+                    }, void 0, true, {
+                        fileName: "src/components/EditProduct.js",
+                        lineNumber: 10,
+                        columnNumber: 9
+                    }, undefined),
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                        className: "input-group",
+                        children: [
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
+                                for: "product-price",
+                                children: "Price"
+                            }, void 0, false, {
+                                fileName: "src/components/EditProduct.js",
+                                lineNumber: 21,
+                                columnNumber: 11
+                            }, undefined),
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
+                                type: "number",
+                                id: "product-price",
+                                value: price,
+                                "aria-label": "Product Price"
+                            }, void 0, false, {
+                                fileName: "src/components/EditProduct.js",
+                                lineNumber: 22,
+                                columnNumber: 11
+                            }, undefined)
+                        ]
+                    }, void 0, true, {
+                        fileName: "src/components/EditProduct.js",
+                        lineNumber: 20,
+                        columnNumber: 9
+                    }, undefined),
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                        className: "input-group",
+                        children: [
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
+                                for: "product-quantity",
+                                children: "Quantity"
+                            }, void 0, false, {
+                                fileName: "src/components/EditProduct.js",
+                                lineNumber: 31,
+                                columnNumber: 11
+                            }, undefined),
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
+                                type: "number",
+                                id: "product-quantity",
+                                value: quantity,
+                                "aria-label": "Product Quantity"
+                            }, void 0, false, {
+                                fileName: "src/components/EditProduct.js",
+                                lineNumber: 32,
+                                columnNumber: 11
+                            }, undefined)
+                        ]
+                    }, void 0, true, {
+                        fileName: "src/components/EditProduct.js",
+                        lineNumber: 30,
+                        columnNumber: 9
+                    }, undefined),
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                        className: "actions form-actions",
+                        children: [
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                                type: "submit",
+                                children: "Update"
+                            }, void 0, false, {
+                                fileName: "src/components/EditProduct.js",
+                                lineNumber: 41,
+                                columnNumber: 11
+                            }, undefined),
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                                type: "button",
+                                children: "Cancel"
+                            }, void 0, false, {
+                                fileName: "src/components/EditProduct.js",
+                                lineNumber: 42,
+                                columnNumber: 11
+                            }, undefined)
+                        ]
+                    }, void 0, true, {
+                        fileName: "src/components/EditProduct.js",
+                        lineNumber: 40,
+                        columnNumber: 9
+                    }, undefined)
+                ]
+            }, void 0, true, {
+                fileName: "src/components/EditProduct.js",
+                lineNumber: 9,
+                columnNumber: 7
+            }, undefined)
+        ]
+    }, void 0, true, {
+        fileName: "src/components/EditProduct.js",
+        lineNumber: 7,
+        columnNumber: 5
+    }, undefined);
+};
+_s(EditProduct, "FHSxrSUQ5tjiyXzIZ5/0BFMsZ+c=");
+_c = EditProduct;
+exports.default = EditProduct;
+var _c;
+$RefreshReg$(_c, "EditProduct");
+
+  $parcel$ReactRefreshHelpers$6c2e.postlude(module);
 } finally {
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
